@@ -1,0 +1,9 @@
+.navbar {
+  flex-direction: row;
+}
+
+.navbar .navElement {
+  margin: 0 1rem;
+  text-decoration: none;
+  color: black;
+}

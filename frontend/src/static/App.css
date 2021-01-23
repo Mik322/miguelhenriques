@@ -1,0 +1,12 @@
+.App,
+.navbar,
+.projectsList,
+.projectCard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.App {
+  flex-direction: column;
+}
