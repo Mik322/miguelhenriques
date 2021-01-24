@@ -3,7 +3,7 @@ use actix_cors::Cors;
 
 #[get("/hello")]
 async fn hello() -> impl Responder {
-    HttpResponse::Ok().body("How ya doin?")
+    HttpResponse::Ok().body("Hello")
 }
 
 #[actix_web::main]
