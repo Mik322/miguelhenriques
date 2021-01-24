@@ -6,11 +6,10 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  useRouteMatch
 } from "react-router-dom";
 import Projects from '../pages/Projects';
 import ContactMe from '../pages/ContactMe';
-import Project from '../pages/Project';
+import ProjectPage from '../pages/ProjectPage';
 
 function App() {
   return (
@@ -28,7 +27,7 @@ function App() {
               </Route>
 
               <Route path="/project/:projectID">
-                <Project/>
+                <ProjectPage/>
               </Route>
 
               <Route path="/">
