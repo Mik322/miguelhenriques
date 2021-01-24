@@ -12,7 +12,9 @@ export default function ProjectPage() {
   useEffect(() => {
     const id = parseInt(projectID);
     if (!isNaN(id)) {
-      setProject(getProjectById(id));
+      getProjectById(id)
+        .then((prj) => setProject(prj))
+        .catch(() => setProject(null));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

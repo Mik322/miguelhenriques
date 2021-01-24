@@ -1,20 +1,24 @@
-import { Email, Project } from "./types"
+import { Email, Project } from "./types";
+import { API } from "./api.json";
+import axios from "axios";
 
-
-//const API = "http://192.168.56.1:8080"
-
-const projects = [
-    {id: 1, name: "Site", imageName: "Site.png", description: "This website"}, 
-    {id: 2, name: "QuarentineLife", description: "A forum created for a school project"}];
-
-export function getProjects(): Array<Project> {
-    return projects
+export async function getProjects(): Promise<Array<Project>> {
+  return await axios.get<Array<Project>>(`${API}/get/projects`).then((res) => {
+    return res.data;
+  });
 }
 
-export function getProjectById(id: number): Project | null {
-    return projects[id-1]
+export async function getProjectById(id: number): Promise<Project | null> {
+  const project = await axios
+    .get<Project>(`${API}/get/project/${id}`)
+    .then((res) => {
+      return res.data;
+    })
+    .catch(() => {
+      return null;
+    });
+
+  return project;
 }
 
-export function sendEmail(email: Email) {
-    
-}
+export function sendEmail(email: Email) {}

@@ -1,9 +1,9 @@
-export interface Project {
+export type Project = {
   id: number;
-  imageName?: String;
+  image_name: String | null;
   name: String;
   description: String;
-}
+};
 
 export type ProjectProp = {
   project: Project;

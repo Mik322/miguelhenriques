@@ -6,7 +6,7 @@ export function useProjects() {
   const [projects, setProjects] = useState<Array<Project>>([]);
 
   useEffect(() => {
-    setProjects(getProjects());
+    getProjects().then((projects) => setProjects(projects));
   }, []);
 
   return projects;
@@ -17,7 +17,7 @@ export function useImageContainer(project: Project | null): JSX.Element {
 
   useEffect(() => {
     if (project !== null) {
-      import(`./static/images/${project.imageName}`)
+      import(`./static/images/${project.image_name}`)
         .then((img) => {
           setContainer(
             <div className="imageContainer">

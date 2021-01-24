@@ -4,10 +4,17 @@
   border-radius: 10%;
   padding: 0.5em 1em;
   margin: 0em 0.5em;
+  color: black;
+  border-color: black;
+}
+
+.project-link {
+  text-decoration: none;
 }
 
 .imageContainer img {
   max-width: 12em;
   max-height: 7.5em;
   border-style: dotted;
+  border-color: black;
 }

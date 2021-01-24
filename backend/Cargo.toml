@@ -9,3 +9,4 @@ edition = "2018"
 [dependencies]
 actix-web = "3"
 actix-cors = "0.5.2"
+serde = "1.0.121"
