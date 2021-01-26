@@ -8,4 +8,8 @@ export async function getProjects(): Promise<Array<Project>> {
   });
 }
 
-export function sendEmail(email: Email) {}
+export async function sendEmail(email: Email): Promise<string> {
+  return await axios.post<string>(`${API}/send_email`, email)
+    .then(res => {return res.data})
+    .then(e => {return e})
+}
