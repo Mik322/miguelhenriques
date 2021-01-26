@@ -13,3 +13,5 @@ serde = "1.0.121"
 diesel = { version = "1.4.5", features = ["postgres", "r2d2"] }
 dotenv = "0.15.0"
 r2d2 = "0.8.9"
+lettre = "0.9.5"
+lettre_email = "0.9.4"

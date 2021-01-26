@@ -2,8 +2,9 @@
 extern crate diesel;
 extern crate r2d2;
 extern crate dotenv;
+extern crate lettre_email;
 
-use actix_web::{web, App, HttpServer};
+use actix_web::{App, HttpServer};
 use actix_cors::Cors;
 
 use diesel::pg::PgConnection;
@@ -14,6 +15,7 @@ use std::env;
 mod schema;
 mod models;
 mod handlers;
+mod email_service;
 
 pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
@@ -42,6 +44,7 @@ async fn main() -> std::io::Result<()> {
             .service(handlers::get_projects)
             .service(handlers::add_project)
             .service(handlers::remove_project)
+            .service(handlers::send_email)
         )
         .bind("0.0.0.0:8080")?
         .run()
