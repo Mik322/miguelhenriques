@@ -1,50 +1,50 @@
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+#[macro_use]
+extern crate diesel;
+extern crate r2d2;
+extern crate dotenv;
+
+use actix_web::{web, App, HttpServer};
 use actix_cors::Cors;
-use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize, Serialize, Clone)]
-struct Project {
-    id: u32,
-    image_name: Option<String>,
-    name: String,
-    description: String
-}
+use diesel::pg::PgConnection;
+use diesel::r2d2::ConnectionManager;
+use dotenv::dotenv;
+use std::env;
 
+mod schema;
+mod models;
+mod handlers;
 
-fn get_projects_vec() -> Vec<Project> {
-    let mut projects = Vec::with_capacity(2);
-    projects.push(Project {id: 1, name: String::from("Site"), image_name: Some(String::from("Site.png")), description: String::from("This website")});
-    projects.push(Project {id: 2, name: String::from("QuarentineLife"), image_name: None, description: String::from("A forum created for a school project")});
+pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
-    projects
-}
+pub fn create_pool() -> Pool {
+    dotenv().ok();
 
-#[get("/projects")]
-async fn get_projects() -> impl Responder {
-    let projects = get_projects_vec();
-    HttpResponse::Ok().json(projects)
-}
+    let database_url = env::var("DATABASE_URL")
+        .expect("DATABASE_URL must be set");
 
-#[get("/project/{project_id}")]
-async fn get_project(web::Path(project_id): web::Path<usize>) -> HttpResponse {
-    let projects = get_projects_vec();
+    let manager = ConnectionManager::<PgConnection>::new(database_url);
 
-    match projects.get(project_id-1) {
-        Some(project) => HttpResponse::Ok().json(project.clone()),
-        None => HttpResponse::NotFound().json("Project not Found".to_string())
-    }
+    r2d2::Pool::builder()
+        .build(manager)
+        .expect("Failed to create Pool")
 }
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    HttpServer::new(||
+
+    let pool = create_pool();
+
+    HttpServer::new(move ||
         App::new()
+            .data(pool.clone())
             .wrap(Cors::permissive())
             .service(
                 web::scope("/get")
-                    .service(get_projects)
-                    .service(get_project)
+                    .service(handlers::get_projects)
+                    .service(handlers::get_project)
             )
+            .service(handlers::add_project)
         )
         .bind("0.0.0.0:8080")?
         .run()
