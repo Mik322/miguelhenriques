@@ -1,7 +1,11 @@
-import { ProjectProp } from "../types";
 import { useImageContainer } from "../hooks";
 import { Link } from "react-router-dom";
 import "../static/ProjectCard.css";
+import { Project } from "../types";
+
+interface ProjectProp {
+  project: Project;
+}
 
 export default function ProjectCard({ project }: ProjectProp) {
   let imageContainer = useImageContainer(project);

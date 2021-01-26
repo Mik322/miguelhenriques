@@ -1,13 +1,15 @@
 import React from "react";
-import ProjectsList from "../containers/ProjectsList"
-import { useProjects } from "../hooks"
+import ProjectsList from "../containers/ProjectsList";
+import { Project } from "../types";
 
-export default function Projects() {
-    const projects = useProjects();
+interface ProjectsProps {
+  projects: Array<Project>;
+}
 
-    return (
-        <div className="Projects" >
-            <ProjectsList projects={projects} />
-        </div>
-    )
+export default function Projects(props: ProjectsProps) {
+  return (
+    <div className="Projects">
+      <ProjectsList projects={props.projects} />
+    </div>
+  );
 }

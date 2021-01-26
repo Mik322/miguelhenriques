@@ -5,15 +5,6 @@ export type Project = {
   description: String;
 };
 
-export type ProjectProp = {
-  project: Project;
-};
-
-export interface ProjectList {
-  projects: Array<Project>;
-  maxSize?: number;
-}
-
 export type Email = {
   name: String;
   from: String;

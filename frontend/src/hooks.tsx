@@ -1,16 +1,5 @@
 import { useEffect, useState } from "react";
 import { Project } from "./types";
-import { getProjects } from "./api";
-
-export function useProjects() {
-  const [projects, setProjects] = useState<Array<Project>>([]);
-
-  useEffect(() => {
-    getProjects().then((projects) => setProjects(projects));
-  }, []);
-
-  return projects;
-}
 
 export function useImageContainer(project: Project | null): JSX.Element {
   let [container, setContainer] = useState<JSX.Element>(<></>);

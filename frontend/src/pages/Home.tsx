@@ -1,15 +1,20 @@
 import React from "react";
-import ProjectsList from "../containers/ProjectsList"
-import { useProjects } from "../hooks"
+import ProjectsList from "../containers/ProjectsList";
+import { Project } from "../types";
 
-export default function Home() {
-    const projects = useProjects();
+interface HomeProps {
+  projects: Array<Project>;
+}
 
-    return (
-        <div className="Content" >
-            <h1>Miguel Henriques</h1>
-            <p>Hello, my name is Miguel. I'm a Computer Science student ao Iscte in Lisbon</p>
-            <ProjectsList projects={projects} maxSize={1} />
-        </div>
-    )
+export default function Home(props: HomeProps) {
+  return (
+    <div className="Content">
+      <h1>Miguel Henriques</h1>
+      <p>
+        Hello, my name is Miguel. I'm a Computer Science student ao Iscte in
+        Lisbon
+      </p>
+      <ProjectsList projects={props.projects} maxSize={1} />
+    </div>
+  );
 }

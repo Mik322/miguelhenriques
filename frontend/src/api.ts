@@ -8,17 +8,4 @@ export async function getProjects(): Promise<Array<Project>> {
   });
 }
 
-export async function getProjectById(id: number): Promise<Project | null> {
-  const project = await axios
-    .get<Project>(`${API}/get/project/${id}`)
-    .then((res) => {
-      return res.data;
-    })
-    .catch(() => {
-      return null;
-    });
-
-  return project;
-}
-
 export function sendEmail(email: Email) {}

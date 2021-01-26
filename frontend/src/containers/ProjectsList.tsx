@@ -1,20 +1,21 @@
 import React from "react";
-import {ProjectList} from "../types";
 import ProjectCard from "../components/ProjectCard";
-import "../static/ProjectsList.css"
+import "../static/ProjectsList.css";
+import { Project } from "../types";
 
-export default function ProjectsList({projects, maxSize=0}: ProjectList) {
-    const projectCards: Array<any> = [];
-    let ProjectList = projects;
+interface ProjectList {
+  projects: Array<Project>;
+  maxSize?: number;
+}
 
-    if (maxSize>0) ProjectList = projects.slice(0, maxSize)
+export default function ProjectsList({ projects, maxSize = 0 }: ProjectList) {
+  const projectCards: Array<any> = [];
+  let ProjectList = projects;
 
-    ProjectList.forEach(project => {
-        projectCards.push(<ProjectCard key={project.id} project={project} />)
-    })
-    return(
-        <div className="projectsList" >
-            {projectCards}
-        </div>
-    )
+  if (maxSize > 0) ProjectList = projects.slice(0, maxSize);
+
+  ProjectList.forEach((project) => {
+    projectCards.push(<ProjectCard key={project.id} project={project} />);
+  });
+  return <div className="projectsList">{projectCards}</div>;
 }
