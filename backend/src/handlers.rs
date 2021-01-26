@@ -10,18 +10,9 @@ pub struct InputProject {
     pub description: String
 }
 
-#[get("/projects")]
+#[get("/get/projects")]
 pub async fn get_projects(pool: web::Data<Pool>) -> Result<HttpResponse, Error> {
     Ok(web::block(move || Project::get_all_projects(pool))
-        .await
-        .map(|project| HttpResponse::Ok().json(project))
-        .map_err(|_| HttpResponse::InternalServerError())?)
-}
-
-
-#[get("/project/{project_id}")]
-pub async fn get_project(pool: web::Data<Pool> ,web::Path(project_id): web::Path<i32>) -> Result<HttpResponse, Error> {
-    Ok(web::block(move || Project::get_project_by_id(pool, project_id))
         .await
         .map(|project| HttpResponse::Ok().json(project))
         .map_err(|_| HttpResponse::InternalServerError())?)

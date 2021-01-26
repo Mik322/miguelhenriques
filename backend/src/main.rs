@@ -39,12 +39,9 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .data(pool.clone())
             .wrap(Cors::permissive())
-            .service(
-                web::scope("/get")
-                    .service(handlers::get_projects)
-                    .service(handlers::get_project)
-            )
+            .service(handlers::get_projects)
             .service(handlers::add_project)
+            .service(handlers::remove_project)
         )
         .bind("0.0.0.0:8080")?
         .run()
