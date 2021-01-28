@@ -9,9 +9,14 @@ edition = "2018"
 [dependencies]
 actix-web = "3"
 actix-cors = "0.5.2"
-serde = "1.0.121"
-diesel = { version = "1.4.5", features = ["postgres", "r2d2"] }
+serde = { version = "1.0.121", features = ["derive"] }
+diesel = { version = "1.4.5", features = ["postgres", "r2d2", "chrono"] }
 dotenv = "0.15.0"
 r2d2 = "0.8.9"
 lettre = "0.9.5"
 lettre_email = "0.9.4"
+chrono = { version = "0.4.19", features = ["serde"] }
+bcrypt = "0.9.0"
+uuid = { version = "0.8.2", features = ["v4"] }
+serde_json = "1.0.61"
+jsonwebtoken = "7.2.0"

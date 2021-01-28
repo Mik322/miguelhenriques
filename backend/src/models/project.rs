@@ -1,6 +1,6 @@
 use serde::Serialize;
 use crate::schema::projects::{self, dsl::*};
-use super::Pool;
+use crate::Pool;
 use diesel::dsl::{delete, insert_into};
 use diesel::QueryDsl;
 use diesel::RunQueryDsl;
@@ -23,7 +23,6 @@ pub struct NewProject<'a> {
     pub name: &'a str,
     pub description: &'a str
 }
-
 
 impl Project {
     pub fn get_all_projects(pool: web::Data<Pool>) -> Result<Vec<Project>, diesel::result::Error> {
