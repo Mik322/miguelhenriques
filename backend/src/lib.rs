@@ -7,17 +7,14 @@ extern crate r2d2;
 #[macro_use]
 extern crate serde_json;
 
-use actix_cors::Cors;
-use actix_web::{App, HttpServer};
-
 use diesel::pg::PgConnection;
 use diesel::r2d2::ConnectionManager;
 use dotenv::dotenv;
 use std::env;
 
 mod errors;
-mod handlers;
-mod models;
+pub mod handlers;
+pub mod models;
 mod schema;
 mod services;
 
@@ -33,23 +30,4 @@ pub fn create_pool() -> Pool {
     r2d2::Pool::builder()
         .build(manager)
         .expect("Failed to create Pool")
-}
-
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    let pool = create_pool();
-
-    HttpServer::new(move || {
-        App::new()
-            .data(pool.clone())
-            .wrap(Cors::permissive())
-            .service(handlers::get_projects)
-            .service(handlers::add_project)
-            .service(handlers::remove_project)
-            .service(handlers::send_email)
-            .service(handlers::login)
-    })
-    .bind("0.0.0.0:8080")?
-    .run()
-    .await
 }
