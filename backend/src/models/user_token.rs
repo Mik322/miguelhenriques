@@ -1,9 +1,12 @@
-use super::user::UserSession;
+use super::user::{User, UserSession};
 use chrono::Utc;
-use jsonwebtoken::{encode, EncodingKey, Header};
+use diesel::PgConnection;
+use jsonwebtoken::{
+    decode, encode, errors::Result, DecodingKey, EncodingKey, Header, TokenData, Validation,
+};
 use serde::{Deserialize, Serialize};
 
-pub static KEY: [u8; 32] = *include_bytes!("../secret.key");
+static KEY: [u8; 32] = *include_bytes!("../secret.key");
 static TIME_TO_EXPIRE: u64 = 7 * 24 * 60 * 60; //One week in seconds
 
 #[derive(Serialize, Deserialize)]
@@ -13,8 +16,8 @@ pub struct UserToken {
     //expiration time
     exp: u64,
 
-    user: String,
-    session: String,
+    pub username: String,
+    pub session: String,
 }
 
 impl UserToken {
@@ -23,10 +26,30 @@ impl UserToken {
         let user = Self {
             iat: now,
             exp: now + TIME_TO_EXPIRE,
-            user: user_session.username.clone(),
+            username: user_session.username.clone(),
             session: user_session.login_session.clone(),
         };
 
         encode(&Header::default(), &user, &EncodingKey::from_secret(&KEY)).unwrap()
+    }
+
+    pub fn decode_token(encoded_token: String) -> Result<TokenData<UserToken>> {
+        let token = decode::<UserToken>(
+            &encoded_token,
+            &DecodingKey::from_secret(&KEY),
+            &Validation::default(),
+        );
+        token
+    }
+
+    pub fn verify_token(
+        token: &TokenData<UserToken>,
+        conn: &PgConnection,
+    ) -> std::result::Result<String, String> {
+        if User::is_valid_session(&token.claims, conn) {
+            Ok(token.claims.username.clone())
+        } else {
+            Err("Token not valid".to_string())
+        }
     }
 }

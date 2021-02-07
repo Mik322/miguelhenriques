@@ -1,15 +1,13 @@
-use std::borrow::Borrow;
-
+use super::login_history::LoginHistory;
+use crate::models::user_token::UserToken;
 use crate::schema::users::{self, dsl::*};
 use crate::Pool;
-use actix_web::web;
+use actix_web::{web, Result};
 use bcrypt::{hash, verify, DEFAULT_COST};
 use diesel::{insert_into, RunQueryDsl};
 use diesel::{update, ExpressionMethods, PgConnection, QueryDsl};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
-
-use super::login_history::LoginHistory;
 
 #[derive(Queryable, Serialize, Clone)]
 pub struct User {
@@ -40,18 +38,10 @@ pub struct NewUser<'a> {
 }
 
 impl User {
-    fn get_user_by_username(conn: &PgConnection, user_username: &str) -> Option<User> {
-        let user = users.filter(username.eq(user_username)).first::<User>(conn);
-        match user {
-            Ok(u) => Some(u),
-            _ => None,
-        }
-    }
-
     pub fn login_user(pool: web::Data<Pool>, user_ld: UserLoginData) -> Option<UserSession> {
         let conn = pool.get().unwrap();
         //Gets the user with the same userme as the inputed user
-        if let Some(user) = User::get_user_by_username(&conn, user_ld.username.borrow()) {
+        if let Some(user) = User::get_user_by_username(&conn, &user_ld.username) {
             //Returns None if password is empty or its diferent than the stored password
             if user_ld.password.is_empty() || !verify(user_ld.password, &user.password).unwrap() {
                 return None;
@@ -90,6 +80,26 @@ impl User {
                     Err(_) => Err("Error with database".to_string()),
                 }
             }
+        }
+    }
+
+    pub fn logout_user(conn: &PgConnection, un: String) -> bool {
+        User::update_session_db(conn, &un, "")
+    }
+
+    pub fn is_valid_session(token: &UserToken, conn: &PgConnection) -> bool {
+        users
+            .filter(username.eq(&token.username))
+            .filter(login_session.eq(&token.session))
+            .get_result::<User>(conn)
+            .is_ok()
+    }
+
+    fn get_user_by_username(conn: &PgConnection, user_username: &str) -> Option<User> {
+        let user = users.filter(username.eq(user_username)).first::<User>(conn);
+        match user {
+            Ok(u) => Some(u),
+            _ => None,
         }
     }
 

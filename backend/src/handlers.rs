@@ -2,7 +2,7 @@ use super::models::project::{NewProject, Project};
 use super::Pool;
 use crate::services::email_service::email_sender;
 use crate::{models::user::UserLoginData, services::account_service};
-use actix_web::{delete, get, post, web, Error, HttpResponse};
+use actix_web::{delete, get, post, web, Error, HttpRequest, HttpResponse};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -67,5 +67,18 @@ pub async fn login(login_data: web::Json<UserLoginData>, pool: web::Data<Pool>) 
     match account_service::login(pool, login_data) {
         Ok(token) => HttpResponse::Ok().json(token),
         Err(se) => se.response(),
+    }
+}
+
+#[post("/logout")]
+pub async fn logout(req: HttpRequest, pool: web::Data<Pool>) -> HttpResponse {
+    if let Some(auth_header) = req.headers().get("authorization") {
+        if let Ok(_) = account_service::logout(auth_header, pool) {
+            HttpResponse::Ok().json("hello")
+        } else {
+            HttpResponse::Unauthorized().json("Auth token not valid")
+        }
+    } else {
+        HttpResponse::Unauthorized().json("No auth token available")
     }
 }

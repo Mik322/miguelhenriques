@@ -6,7 +6,10 @@ use crate::{
     },
     Pool,
 };
-use actix_web::{http::StatusCode, web};
+use actix_web::{
+    http::{HeaderValue, StatusCode},
+    web,
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
@@ -44,5 +47,28 @@ pub fn login(
             StatusCode::UNAUTHORIZED,
             "User not found".to_string(),
         )),
+    }
+}
+
+pub fn logout(auth_header: &HeaderValue, pool: web::Data<Pool>) -> Result<(), ()> {
+    if let Ok(header_str) = auth_header.to_str() {
+        if !header_str.starts_with("bearer") && !header_str.starts_with("Bearer") {
+            return Err(());
+        };
+        let token_str = header_str[6..auth_header.len()].trim();
+        match UserToken::decode_token(token_str.to_string()) {
+            Ok(token_data) => {
+                let conn = pool.get().unwrap();
+                let token = token_data.claims;
+                if User::logout_user(&conn, token.username) {
+                    Ok(())
+                } else {
+                    Err(())
+                }
+            }
+            Err(_) => Err(()),
+        }
+    } else {
+        Err(())
     }
 }

@@ -6,6 +6,7 @@ extern crate lettre_email;
 extern crate r2d2;
 #[macro_use]
 extern crate serde_json;
+extern crate actix_web;
 
 use diesel::pg::PgConnection;
 use diesel::r2d2::ConnectionManager;
@@ -14,6 +15,7 @@ use std::env;
 
 mod errors;
 pub mod handlers;
+pub mod middlewares;
 pub mod models;
 mod schema;
 mod services;
